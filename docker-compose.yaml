@@ -1,0 +1,21 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: jwt_security
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1402
+    ports:
+      - "5432:5432"
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/jwt_security
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1402
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+    ports:
+      - "8080:8080"
