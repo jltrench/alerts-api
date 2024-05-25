@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/jwt_security
-    username: postgres
-    password: 1402
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+    username: RM551638
+    password: 140701
+    driver-class-name: oracle.jdbc.OracleDriver
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -11,8 +11,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
 springdoc:
   api-docs:
     path: /api-docs

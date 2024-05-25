@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class Alert {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alert_seq")
+    @SequenceGenerator(name = "alert_seq", sequenceName = "alert_seq", allocationSize = 1)
     private Integer id;
     private String type;
     private String message;
