@@ -19,10 +19,6 @@ COPY --from=build /workspace/target/*.jar $APP_DIR
 
 RUN apk add --no-cache netcat-openbsd
 
-COPY wait-for-db.sh $APP_DIR
-
-RUN chmod +x wait-for-db.sh
-
 EXPOSE 8080
 
 CMD ["java", "-jar", "security-0.0.1-SNAPSHOT.jar"]
