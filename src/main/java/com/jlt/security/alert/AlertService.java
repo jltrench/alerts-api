@@ -12,30 +12,34 @@ import java.util.stream.Collectors;
 public class AlertService {
     private final AlertRepository alertRepository;
 
-    public Alert save(Alert alertDao) {
+    public Alert save(AlertDto newAlertDto, String author) {
         Alert alert = new Alert();
-        alert.setType(alertDao.getType());
-        alert.setMessage(alertDao.getMessage());
-        alert.setCoords(alertDao.getCoords());
-        alert.setAuthor(alertDao.getAuthor());
-
+        alert.setType(newAlertDto.getType());
+        alert.setMessage(newAlertDto.getMessage());
+        alert.setCoords(newAlertDto.getCoords());
+        alert.setAuthor(author);
         return alertRepository.save(alert);
     }
 
-    public void deleteById(Integer id) {
-        alertRepository.deleteById(id);
+    public Optional<Alert> updateAlert(Integer id, AlertDto updatedAlertDto, String author) {
+        Optional<Alert> alertOpt = alertRepository.findByIdAndAuthor(id, author);
+        if (alertOpt.isPresent()) {
+            Alert alert = alertOpt.get();
+            alert.setType(updatedAlertDto.getType());
+            alert.setMessage(updatedAlertDto.getMessage());
+            alert.setCoords(updatedAlertDto.getCoords());
+            alertRepository.save(alert);
+        }
+        return alertOpt;
     }
 
-    public Optional<Alert> findById(Integer id) {
-        return alertRepository.findById(id);
-    }
-
-    public List<Alert> findAll() {
-        return alertRepository.findAll();
-    }
-
-    public void deleteAll() {
-        alertRepository.deleteAll();
+    public boolean deleteByIdAndAuthor(Integer id, String author) {
+        Optional<Alert> alertOpt = alertRepository.findByIdAndAuthor(id, author);
+        if (alertOpt.isPresent()) {
+            alertRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public List<Alert> findAllByAuthor(String author) {
@@ -44,20 +48,6 @@ public class AlertService {
 
     public Optional<Alert> findByIdAndAuthor(Integer id, String author) {
         return alertRepository.findByIdAndAuthor(id, author);
-    }
-
-    public void deleteAllByAuthor(String author) {
-        List<Alert> alerts = alertRepository.findAllByAuthor(author);
-        alerts.forEach(alert -> alertRepository.deleteById(alert.getId()));
-    }
-
-    public Alert save(AlertDao newAlert) {
-        Alert alert = new Alert();
-        alert.setType(newAlert.getType());
-        alert.setMessage(newAlert.getMessage());
-        alert.setCoords(newAlert.getCoords());
-        alert.setAuthor(newAlert.getAuthor());
-        return alertRepository.save(alert);
     }
 
     public List<Alert> findNearbyAlerts(String author, String coords, double radius) {

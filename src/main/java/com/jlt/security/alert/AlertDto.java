@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AlertDao {
+public class AlertDto {
     private String type;
     private String message;
     private String coords;
