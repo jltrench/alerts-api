@@ -57,6 +57,11 @@ public class AlertService {
                 .collect(Collectors.toList());
     }
 
+    public void update(Alert alert) {
+
+        alertRepository.save(alert);
+    }
+
     private double haversineDistance(String coords1, String coords2) {
         String[] splitCoords1 = coords1.split(",");
         String[] splitCoords2 = coords2.split(",");

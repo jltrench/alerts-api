@@ -44,11 +44,26 @@ public class AlertController {
         return new ResponseEntity<>(alerts, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Alert> updateAlert(@PathVariable Integer id, @RequestBody AlertDto updatedAlertDto, @AuthenticationPrincipal UserDetails userDetails) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Alert> updateAlert(@PathVariable Integer id, @RequestBody AlertDto updatedAlert, @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
-        Optional<Alert> alert = alertService.updateAlert(id, updatedAlertDto, email);
-        return alert.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<Alert> alert = alertService.findByIdAndAuthor(id, email);
+        if (alert.isPresent()) {
+            Alert existingAlert = alert.get();
+            if (updatedAlert.getType() != null) {
+                existingAlert.setType(updatedAlert.getType());
+            }
+            if (updatedAlert.getMessage() != null) {
+                existingAlert.setMessage(updatedAlert.getMessage());
+            }
+            if (updatedAlert.getCoords() != null) {
+                existingAlert.setCoords(updatedAlert.getCoords());
+            }
+            alertService.update(existingAlert);
+            return new ResponseEntity<>(existingAlert, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
